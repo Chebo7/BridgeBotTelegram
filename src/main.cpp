@@ -20,14 +20,13 @@ int main() {
   TgBot::Bot bot(TOKEN);
   bot.getEvents().onCommand("start", [&bot,
                                       &Clients](TgBot::Message::Ptr message) {
-    auto chatId = message->chat->id;
     bot.getApi().sendMessage(
         message->chat->id,
         "Hey, if you want to send me a private message, leave a short message "
         "here explaining what happened or why you're writing, and I'll see "
-        "your request.Thanks, this is to prevent spam and bots :)     " +
-            std::to_string(chatId));
-    Clients.emplace(chatId, WaitingForText);
+        "your request.Thanks, this is to prevent spam and bots :)     ");
+    Clients.emplace(message->chat->id, ClientState::WaitingForText);
+    Clients[message->chat->id] = ClientState::WaitingForText;
   });
 
   bot.getEvents().onNonCommandMessage(
@@ -42,7 +41,11 @@ int main() {
               message->chat->id,
               "Hmmm... I haven't learned to understand this command :(");
         } else if (Clients[message->chat->id] == ClientState::WaitingForText) {
-          bot.getApi().sendMessage(message->chat->id, "окак");
+          bot.getApi().sendMessage(message->chat->id,
+                                   "Your message has been sent.");
+
+          bot.getApi().sendMessage(7960664163,
+                                   "The user wrote to you: " + message->text);
           Clients[message->chat->id] = ClientState::Default;
         }
       });
