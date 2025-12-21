@@ -26,7 +26,6 @@ int main() {
         "here explaining what happened or why you're writing, and I'll see "
         "your request.Thanks, this is to prevent spam and bots :)     ");
     Clients.emplace(message->chat->id, ClientState::WaitingForText);
-    Clients[message->chat->id] = ClientState::WaitingForText;
   });
 
   bot.getEvents().onNonCommandMessage(
@@ -43,10 +42,13 @@ int main() {
         } else if (Clients[message->chat->id] == ClientState::WaitingForText) {
           bot.getApi().sendMessage(message->chat->id,
                                    "Your message has been sent.");
+          Clients[message->chat->id] = ClientState::Default;
+
+          std::string clientUsername = message.get()->chat->username;
 
           bot.getApi().sendMessage(7960664163,
-                                   "The user wrote to you: " + message->text);
-          Clients[message->chat->id] = ClientState::Default;
+                                   "The @" + clientUsername +
+                                       " wrote to you: " + message->text);
         }
       });
 
