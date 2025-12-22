@@ -11,3 +11,34 @@
 ![GitHub Watchers](https://img.shields.io/github/watchers/Chebo7/BridgeBotTelegram)
 ![GitHub](https://img.shields.io/github/license/Chebo7/BridgeBotTelegram)
 ![GitHub language count](https://img.shields.io/github/languages/count/Chebo7/BridgeBotTelegram)
+
+# A simple and effective Telegram bot for receiving and forwarding user messages to the administrator. Ideal for personal contacts or support.
+
+## Install
+
+You must have the boost library, cmake, and make downloaded.
+
+Make project:
+```
+git clone https://github.com/Chebo7/BridgeBotTelegram.git
+cd BridgeBotTelegram
+mkdir build
+cd build
+cmake ..
+make -j
+```
+
+Next, we configure the environment variables:
+``` 
+export TELEGRAM_BOT_TOKEN="Your token"
+```
+and 
+
+```
+export ADMIN_CHAT_ID="Your Telegram ID"
+```
+
+## Launch:
+```
+./tgbot &
+```
