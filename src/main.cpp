@@ -6,9 +6,9 @@
 enum ClientState { Default, WaitingForText };
 
 int main() {
-  const char *TOKEN = getenv("TELEGRAM_BOT_TOKEN");
+  const char *TELEGRAM_BOT_TOKEN = getenv("TELEGRAM_BOT_TOKEN");
 
-  if (TOKEN == nullptr) {
+  if (TELEGRAM_BOT_TOKEN == nullptr) {
     std::cerr << "The environment variable for the bot token is not set. Set "
                  "it using \"export TELEGRAM_BOT_TOKEN=\"Your token\"\""
               << std::endl;
@@ -26,7 +26,7 @@ int main() {
 
   std::unordered_map<int64_t, ClientState> Clients;
 
-  TgBot::Bot bot(TOKEN);
+  TgBot::Bot bot(TELEGRAM_BOT_TOKEN);
   bot.getEvents().onCommand("start", [&bot,
                                       &Clients](TgBot::Message::Ptr message) {
     bot.getApi().sendMessage(
