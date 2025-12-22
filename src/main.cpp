@@ -7,7 +7,22 @@ enum ClientState { Default, WaitingForText };
 
 int main() {
   const char *TOKEN = getenv("TELEGRAM_BOT_TOKEN");
-  const int64_t ADMIN_CHAT_ID{};
+
+  if (TOKEN == nullptr) {
+    std::cerr << "The environment variable for the bot token is not set. Set "
+                 "it using \"export TELEGRAM_BOT_TOKEN=\"Your token\"\""
+              << std::endl;
+    return 1;
+  }
+
+  const char *ADMIN_CHAT_ID = getenv("ADMIN_CHAT_ID");
+
+  if (ADMIN_CHAT_ID == nullptr) {
+    std::cerr << "The environment variable for the admin chat is not set. Set "
+                 "it using \"export ADMIN_CHAT_ID=\"Your Telegram ID\"\""
+              << std::endl;
+    return 1;
+  }
 
   std::unordered_map<int64_t, ClientState> Clients;
 
