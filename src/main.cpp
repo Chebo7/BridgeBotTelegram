@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <tgbot/tgbot.h>
@@ -52,9 +53,16 @@ int main() {
 
           std::string clientUsername = message.get()->chat->username;
 
-          bot.getApi().sendMessage(ADMIN_CHAT_ID,
-                                   "The @" + clientUsername +
-                                       " wrote to you: " + message->text);
+          if (clientUsername.empty()) {
+            std::string prepareMessage = "The user do not have username, id: " +
+                                         std::to_string(message->chat->id) +
+                                         " wrote to you: " + message->text;
+            bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
+          } else {
+            std::string prepareMessage =
+                "The @" + clientUsername + " wrote to you: " + message->text;
+            bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
+          }
         }
       });
 
