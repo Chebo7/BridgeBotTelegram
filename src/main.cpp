@@ -42,13 +42,14 @@ int main() {
       [&bot, &Clients, ADMIN_CHAT_ID](TgBot::Message::Ptr message) {
         std::cout << "User wrote " + message->text << std::endl;
 
-        if (!Clients.contains(message->chat->id)) {
+        if (Clients[message->chat->id] != ClientState::WaitingForText) {
           bot.getApi().sendMessage(
               message->chat->id,
               "Hmmm... I haven't learned to understand this command :(");
         } else if (Clients[message->chat->id] == ClientState::WaitingForText) {
           bot.getApi().sendMessage(message->chat->id,
                                    "Your message has been sent.");
+
           Clients.insert_or_assign(message->chat->id, ClientState::Default);
 
           std::string clientUsername = message.get()->chat->username;
