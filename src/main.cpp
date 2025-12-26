@@ -37,36 +37,36 @@ int main() {
     Clients.insert_or_assign(message->chat->id, ClientState::WaitingForText);
   });
 
-  bot.getEvents().onNonCommandMessage(
-      [&bot, &Clients, ADMIN_CHAT_ID](TgBot::Message::Ptr message) {
-        std::println("User wrote: {}", message->text);
+  bot.getEvents().onNonCommandMessage([&bot, &Clients, ADMIN_CHAT_ID](
+                                          TgBot::Message::Ptr message) {
+    std::println("User wrote: {}", message->text);
 
-        if (Clients[message->chat->id] != ClientState::WaitingForText) {
-          bot.getApi().sendMessage(
-              message->chat->id,
-              "Hmmm... I haven't learned to understand this command :(");
-        } else if (Clients[message->chat->id] == ClientState::WaitingForText) {
-          bot.getApi().sendMessage(message->chat->id,
-                                   "Your message has been sent.");
+    auto it = Clients.find(message->chat->id);
+    if (it == Clients.end() || it->second == ClientState::Default) {
+      bot.getApi().sendMessage(
+          message->chat->id,
+          "Hmmm... I haven't learned to understand this command :(");
+      return;
+    }
+    bot.getApi().sendMessage(message->chat->id, "Your message has been sent.");
 
-          Clients.insert_or_assign(message->chat->id, ClientState::Default);
+    Clients.insert_or_assign(message->chat->id, ClientState::Default);
 
-          std::string clientUsername = message.get()->chat->username;
+    std::string clientUsername = message.get()->chat->username;
 
-          if (clientUsername.empty()) {
+    if (clientUsername.empty()) {
 
-            std::string prepareMessage = std::format(
-                "The user do not have username, id: {},  wrote to you: {}",
-                message->chat->id, message->text);
+      std::string prepareMessage = std::format(
+          "The user do not have username, id: {},  wrote to you: {}",
+          message->chat->id, message->text);
 
-            bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
-          } else {
-            std::string prepareMessage = std::format(
-                "The @{} wrote to you: {}", clientUsername, message->text);
-            bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
-          }
-        }
-      });
+      bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
+    } else {
+      std::string prepareMessage = std::format("The @{} wrote to you: {}",
+                                               clientUsername, message->text);
+      bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
+    }
+  });
 
   try {
     std::string botUsername = bot.getApi().getMe()->username;
