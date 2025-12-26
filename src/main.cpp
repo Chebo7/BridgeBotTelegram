@@ -1,5 +1,7 @@
 #include <cstdint>
+#include <format>
 #include <iostream>
+#include <print>
 #include <string>
 #include <tgbot/tgbot.h>
 #include <unordered_map>
@@ -34,13 +36,13 @@ int main() {
         message->chat->id,
         "Hey, if you want to send me a private message, leave a short message "
         "here explaining what happened or why you're writing, and I'll see "
-        "your request.Thanks, this is to prevent spam and bots :)     ");
+        "your request.Thanks, this is to prevent spam and bots :)");
     Clients.insert_or_assign(message->chat->id, ClientState::WaitingForText);
   });
 
   bot.getEvents().onNonCommandMessage(
       [&bot, &Clients, ADMIN_CHAT_ID](TgBot::Message::Ptr message) {
-        std::cout << "User wrote " + message->text << std::endl;
+        std::println("User wrote: {}", message->text);
 
         if (Clients[message->chat->id] != ClientState::WaitingForText) {
           bot.getApi().sendMessage(
@@ -55,6 +57,7 @@ int main() {
           std::string clientUsername = message.get()->chat->username;
 
           if (clientUsername.empty()) {
+
             std::string prepareMessage = "The user do not have username, id: " +
                                          std::to_string(message->chat->id) +
                                          " wrote to you: " + message->text;
@@ -68,14 +71,21 @@ int main() {
       });
 
   try {
-    std::cout << "Bot username: " + bot.getApi().getMe()->username << std::endl;
+    std::string botUsername = bot.getApi().getMe()->username;
+
+    if (botUsername.empty()) {
+      std::println("Bot username empty");
+    } else {
+      std::println("Bot username is: {}", botUsername);
+    }
+
     TgBot::TgLongPoll longPoll(bot);
     while (true) {
-      std::cout << "Long poll started" << std::endl;
+      std::println("Long poll started");
       longPoll.start();
     }
   } catch (TgBot::TgException &e) {
-    std::cout << "Error: " << e.what();
+    std::println("Error: {}", e.what());
   }
   return 0;
 }
