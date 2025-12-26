@@ -64,8 +64,8 @@ int main() {
 
             bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
           } else {
-            std::string prepareMessage =
-                "The @" + clientUsername + " wrote to you: " + message->text;
+            std::string prepareMessage = std::format(
+                "The @{} wrote to you: {}", clientUsername, message->text);
             bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
           }
         }
