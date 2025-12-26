@@ -24,25 +24,25 @@ int main() {
     return 1;
   }
 
-  std::unordered_map<int64_t, ClientState> Clients;
+  std::unordered_map<int64_t, ClientState> clients;
 
   TgBot::Bot bot(TELEGRAM_BOT_TOKEN);
   bot.getEvents().onCommand("start", [&bot,
-                                      &Clients](TgBot::Message::Ptr message) {
+                                      &clients](TgBot::Message::Ptr message) {
     bot.getApi().sendMessage(
         message->chat->id,
         "Hey, if you want to send me a private message, leave a short message "
         "here explaining what happened or why you're writing, and I'll see "
         "your request.Thanks, this is to prevent spam and bots :)");
-    Clients.insert_or_assign(message->chat->id, ClientState::WaitingForText);
+    clients.insert_or_assign(message->chat->id, ClientState::WaitingForText);
   });
 
-  bot.getEvents().onNonCommandMessage([&bot, &Clients, ADMIN_CHAT_ID](
+  bot.getEvents().onNonCommandMessage([&bot, &clients, ADMIN_CHAT_ID](
                                           TgBot::Message::Ptr message) {
     std::println("User wrote: {}", message->text);
 
-    auto it = Clients.find(message->chat->id);
-    if (it == Clients.end() || it->second == ClientState::Default) {
+    auto it = clients.find(message->chat->id);
+    if (it == clients.end() || it->second == ClientState::Default) {
       bot.getApi().sendMessage(
           message->chat->id,
           "Hmmm... I haven't learned to understand this command :(");
@@ -50,7 +50,7 @@ int main() {
     }
     bot.getApi().sendMessage(message->chat->id, "Your message has been sent.");
 
-    Clients.insert_or_assign(message->chat->id, ClientState::Default);
+    it->second = ClientState::Default;
 
     std::string clientUsername = message.get()->chat->username;
 
