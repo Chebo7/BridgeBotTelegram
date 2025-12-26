@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <format>
-#include <iostream>
 #include <print>
 #include <string>
 #include <tgbot/tgbot.h>
@@ -12,18 +11,16 @@ int main() {
   const char *TELEGRAM_BOT_TOKEN = getenv("TELEGRAM_BOT_TOKEN");
 
   if (TELEGRAM_BOT_TOKEN == nullptr) {
-    std::cerr << "The environment variable for the bot token is not set. Set "
-                 "it using \"export TELEGRAM_BOT_TOKEN=\"Your token\"\""
-              << std::endl;
+    std::println("The environment variable for the bot token is not set. Set "
+                 "it using \"export TELEGRAM_BOT_TOKEN=\"Your token\"\"");
     return 1;
   }
 
   const char *ADMIN_CHAT_ID = getenv("ADMIN_CHAT_ID");
 
   if (ADMIN_CHAT_ID == nullptr) {
-    std::cerr << "The environment variable for the admin chat is not set. Set "
-                 "it using \"export ADMIN_CHAT_ID=\"Your Telegram ID\"\""
-              << std::endl;
+    std::println("The environment variable for the admin chat is not set. Set "
+                 "it using \"export ADMIN_CHAT_ID=\"Your Telegram ID\"\"");
     return 1;
   }
 
