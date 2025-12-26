@@ -58,9 +58,10 @@ int main() {
 
           if (clientUsername.empty()) {
 
-            std::string prepareMessage = "The user do not have username, id: " +
-                                         std::to_string(message->chat->id) +
-                                         " wrote to you: " + message->text;
+            std::string prepareMessage = std::format(
+                "The user do not have username, id: {},  wrote to you: {}",
+                message->chat->id, message->text);
+
             bot.getApi().sendMessage(ADMIN_CHAT_ID, prepareMessage);
           } else {
             std::string prepareMessage =
