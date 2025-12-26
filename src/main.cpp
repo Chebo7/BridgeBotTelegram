@@ -1,8 +1,10 @@
-#include <cstdint>
+#include "tgbot/TgException.h"
+#include <chrono>
 #include <format>
 #include <print>
 #include <string>
 #include <tgbot/tgbot.h>
+#include <thread>
 #include <unordered_map>
 
 enum ClientState { Default, WaitingForText };
@@ -79,11 +81,16 @@ int main() {
 
     TgBot::TgLongPoll longPoll(bot);
     while (true) {
-      std::println("Long poll started");
-      longPoll.start();
+      try {
+        longPoll.start();
+      } catch (const TgBot::TgException &e) {
+        std::println("Error start polling: {}", e.what());
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+      }
     }
-  } catch (TgBot::TgException &e) {
+  } catch (const TgBot::TgException &e) {
     std::println("Error: {}", e.what());
+    return 1;
   }
   return 0;
 }
